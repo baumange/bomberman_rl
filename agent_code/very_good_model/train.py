@@ -194,22 +194,22 @@ def game_events_occurred(self, old_game_state, self_action, new_game_state, even
         return
 
     # store features (without moving to device yet)
-    state_feat = get_features(old_game_state)
-    next_feat = None if new_game_state is None else get_features(new_game_state)
+    state_feat = get_features(old_game_state).to(self.device)
+    next_feat = None if new_game_state is None else get_features(new_game_state).to(self.device)
 
     td = TensorDict(
         {
             "state": state_feat,
-            "action": torch.tensor(self.last_action),
-            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool),
-            "action_log_prob": torch.tensor([self.last_log_prob]),
-            "action_entropy": torch.tensor([self.last_entropy]),
-            "state_value": torch.tensor([self.last_value]),
+            "action": torch.tensor(self.last_action, device=self.device),
+            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool, device=self.device),
+            "action_log_prob": torch.tensor([self.last_log_prob], device=self.device),
+            "action_entropy": torch.tensor([self.last_entropy], device=self.device),
+            "state_value": torch.tensor([self.last_value], device=self.device),
             "next": {
                 "state": next_feat,
-                "reward": torch.tensor([reward], dtype=torch.float32),
-                "done": torch.tensor([new_game_state is None], dtype=torch.bool),
-                "terminated": torch.tensor([new_game_state is None], dtype=torch.bool),
+                "reward": torch.tensor([reward], dtype=torch.float32, device=self.device),
+                "done": torch.tensor([new_game_state is None], dtype=torch.bool, device=self.device),
+                "terminated": torch.tensor([new_game_state is None], dtype=torch.bool, device=self.device),
             },
         }
     )
@@ -227,20 +227,20 @@ def end_of_round(self, last_game_state, last_action, events):
     td = TensorDict(
         {
             "state": self.trajectory[-1]["next"]["state"],
-            "action": torch.tensor(self.last_action),
-            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool),
-            "action_log_prob": torch.tensor([self.last_log_prob]),
-            "action_entropy": torch.tensor([self.last_entropy]),
-            "state_value": torch.tensor([self.last_value]),
+            "action": torch.tensor(self.last_action, device=self.device),
+            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool, device=self.device),
+            "action_log_prob": torch.tensor([self.last_log_prob], device=self.device),
+            "action_entropy": torch.tensor([self.last_entropy], device=self.device),
+            "state_value": torch.tensor([self.last_value], device=self.device),
             "next": {
-                "state": get_features(last_game_state),
+                "state": get_features(last_game_state).to(self.device),
                 "state_value": self.model.get_action(
                     get_features(last_game_state).to(self.device),
                     valid_mask=valid_actions_mask(last_game_state).to(self.device),
                 )[3],
-                "reward": torch.tensor([final_reward], dtype=torch.float32),
-                "done": torch.tensor([True], dtype=torch.bool),
-                "terminated": torch.tensor([True], dtype=torch.bool),
+                "reward": torch.tensor([final_reward], dtype=torch.float32, device=self.device),
+                "done": torch.tensor([True], dtype=torch.bool, device=self.device),
+                "terminated": torch.tensor([True], dtype=torch.bool, device=self.device),
             },
         }
     )
