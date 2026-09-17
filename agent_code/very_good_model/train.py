@@ -201,7 +201,7 @@ def game_events_occurred(self, old_game_state, self_action, new_game_state, even
         {
             "state": state_feat,
             "action": torch.tensor(self.last_action, device=self.device),
-            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool, device=self.device),
+            "action_mask": self.last_action_mask,
             "action_log_prob": torch.tensor([self.last_log_prob], device=self.device),
             "action_entropy": torch.tensor([self.last_entropy], device=self.device),
             "state_value": torch.tensor([self.last_value], device=self.device),
@@ -228,7 +228,7 @@ def end_of_round(self, last_game_state, last_action, events):
         {
             "state": self.trajectory[-1]["next"]["state"],
             "action": torch.tensor(self.last_action, device=self.device),
-            "action_mask": torch.tensor(self.last_action_mask, dtype=torch.bool, device=self.device),
+            "action_mask": self.last_action_mask,
             "action_log_prob": torch.tensor([self.last_log_prob], device=self.device),
             "action_entropy": torch.tensor([self.last_entropy], device=self.device),
             "state_value": torch.tensor([self.last_value], device=self.device),
