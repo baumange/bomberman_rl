@@ -25,7 +25,7 @@ max_grad_norm = 1.0
 frames_per_batch = 400
 # For a complete training, bring the number of frames up to 1M
 # total_frames = 40_000
-rounds = 1000
+rounds = 10000
 
 sub_batch_size = 64  # cardinality of the sub-samples gathered from the current data in the inner loop
 num_epochs = 10  # optimization steps per batch of data collected
@@ -235,8 +235,8 @@ def end_of_round(self, last_game_state, last_action, events):
             "next": {
                 "state": get_features(last_game_state),
                 "state_value": self.model.get_action(
-                    get_features(last_game_state),
-                    valid_mask=valid_actions_mask(last_game_state),
+                    get_features(last_game_state).to(self.device),
+                    valid_mask=valid_actions_mask(last_game_state).to(self.device),
                 )[3],
                 "reward": torch.tensor([final_reward], dtype=torch.float32),
                 "done": torch.tensor([True], dtype=torch.bool),

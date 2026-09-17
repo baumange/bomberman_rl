@@ -371,7 +371,7 @@ def setup(self):
 
 def act(self, game_state):
     features = get_features(game_state).to(self.device)
-    action_mask = valid_actions_mask(game_state)
+    action_mask = valid_actions_mask(game_state).to(self.device)
     action, log_prob, entropy, value = self.model.get_action(
         features, valid_mask=action_mask, logger=self.logger
     )
