@@ -19,7 +19,7 @@ from torchrl.modules import (
 from torchrl.objectives import ClipPPOLoss
 from torchrl.objectives.value import GAE
 
-lr = 1e-5
+lr = 1e-4
 max_grad_norm = 1.0
 
 frames_per_batch = 400
@@ -34,7 +34,7 @@ clip_epsilon = (
 )
 gamma = 0.98
 lmbda = 0.94
-entropy_eps = 6e-2
+entropy_eps = 2e-2
 
 
 def setup_training(self):
@@ -114,7 +114,7 @@ def setup_training(self):
         clip_epsilon=clip_epsilon,
         entropy_bonus=bool(entropy_eps),
         entropy_coeff=entropy_eps,
-        critic_coeff=1.0,
+        critic_coeff=0.5,
         loss_critic_type="smooth_l1",
     )
 
@@ -172,7 +172,7 @@ def reward_from_events(self, events):
         e.INVALID_ACTION: -5,
         e.WAITED: -1,
         e.BOMB_DROPPED: 0,
-        e.SURVIVED_ROUND: 0,
+        e.SURVIVED_ROUND: 100,
     }
     reward = sum(game_rewards.get(event, 0) for event in events)
     self.logger.debug(
