@@ -27,25 +27,36 @@ class VeryGoodModelCommon(nn.Module):
         # ---------------------------------------------------------
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(
+            nn.Conv2d( # 17x17 -> 15x15
                 in_channels,
                 64,
                 kernel_size=3,
-                padding=1,
+                padding=0,
             ),
             nn.ReLU(),
-            nn.Conv2d(
+            nn.Conv2d( # 15x15 -> 15x15
                 64,
-                64,
+                256,
                 kernel_size=3,
                 padding=1,
             ),
             nn.ReLU(),
-            nn.Conv2d(
-                64,
-                64,
+            nn.MaxPool2d( # 15x15 -> 5x5
                 kernel_size=3,
-                padding=1,
+                stride=3,
+            ),
+            nn.Conv2d( # 5x5 -> 3x3
+                256,
+                1024,
+                kernel_size=3,
+                padding=0,
+            ),
+            nn.ReLU(),
+            nn.Conv2d( # 3x3 -> 1x1
+                1024,
+                4096,
+                kernel_size=3,
+                padding=0,
             ),
             nn.ReLU(),
         )
@@ -373,7 +384,7 @@ def act(self, game_state):
     features = get_features(game_state).to(self.device)
     action_mask = valid_actions_mask(game_state).to(self.device)
     action, log_prob, entropy, value = self.model.get_action(
-        features, valid_mask=action_mask, logger=self.logger
+        features, valid_mask=action_mask, logger=self.logger, deterministic=not self.train
     )
     if self.train:
         self.last_action = action.item()
