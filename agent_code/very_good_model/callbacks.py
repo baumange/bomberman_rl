@@ -34,20 +34,16 @@ class VeryGoodModelCommon(nn.Module):
                 padding=0,
             ),
             nn.ReLU(),
-            nn.MaxPool2d( # 15x15 -> 5x5
-                kernel_size=3,
-                stride=3,
-            ),
-            nn.Conv2d( # 5x5 -> 3x3
+            nn.Conv2d( # 15x15 -> 13x13
                 64,
-                256,
+                64,
                 kernel_size=3,
                 padding=0,
             ),
             nn.ReLU(),
-            nn.Conv2d( # 3x3 -> 1x1
-                256,
-                1024,
+            nn.Conv2d( # 13x13 -> 11x11
+                64,
+                64,
                 kernel_size=3,
                 padding=0,
             ),
@@ -72,7 +68,9 @@ class VeryGoodModelCommon(nn.Module):
         # ---------------------------------------------------------
 
         self.fc = nn.Sequential(
-            nn.Linear(self.cnn_output_size, 256),
+            nn.Linear(self.cnn_output_size, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
             nn.ReLU(),
         )
 

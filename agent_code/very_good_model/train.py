@@ -19,7 +19,7 @@ from torchrl.modules import (
 from torchrl.objectives import ClipPPOLoss
 from torchrl.objectives.value import GAE
 
-lr = 1e-4
+lr = 5e-5
 max_grad_norm = 1.0
 
 frames_per_batch = 400
@@ -34,7 +34,7 @@ clip_epsilon = (
 )
 gamma = 0.98
 lmbda = 0.94
-entropy_eps = 2e-2
+entropy_eps = 4e-2
 
 
 def setup_training(self):
