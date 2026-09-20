@@ -19,7 +19,7 @@ from torchrl.modules import (
 from torchrl.objectives import ClipPPOLoss
 from torchrl.objectives.value import GAE
 
-lr = 5e-5
+lr = 5e-4
 max_grad_norm = 1.0
 
 frames_per_batch = 400
@@ -164,13 +164,13 @@ def setup_training(self):
 
 def reward_from_events(self, events):
     game_rewards = {
-        e.COIN_COLLECTED: 20,
+        e.COIN_COLLECTED: 50,
         e.CRATE_DESTROYED: 5,
         e.KILLED_OPPONENT: 100,
-        e.KILLED_SELF: -100,
-        e.GOT_KILLED: -100,
+        e.KILLED_SELF: -150,
+        e.GOT_KILLED: -200,
         e.INVALID_ACTION: -5,
-        e.WAITED: -1,
+        e.WAITED: -5,
         e.BOMB_DROPPED: 0,
         e.SURVIVED_ROUND: 100,
     }
