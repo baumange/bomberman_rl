@@ -68,7 +68,9 @@ class VeryGoodModelCommon(nn.Module):
         # ---------------------------------------------------------
 
         self.fc = nn.Sequential(
-            nn.Linear(self.cnn_output_size, 512),
+            nn.Linear(self.cnn_output_size, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
             nn.ReLU(),
             nn.Linear(512, 256),
             nn.ReLU(),
